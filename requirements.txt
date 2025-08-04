@@ -1,0 +1,68 @@
+# Smart Log Analyzer - Python Dependencies
+
+# Core dependencies
+pandas>=1.5.0
+numpy>=1.21.0
+pyyaml>=6.0
+requests>=2.28.0
+
+# Machine Learning
+scikit-learn>=1.1.0
+joblib>=1.2.0
+
+# Natural Language Processing
+nltk>=3.8
+spacy>=3.4.0
+
+# Data Processing
+python-dateutil>=2.8.0
+regex>=2022.10.0
+
+# API Integration
+jira>=3.4.0
+
+# Web Framework (for future API)
+fastapi>=0.85.0
+uvicorn>=0.18.0
+
+# Utilities
+click>=8.1.0
+tqdm>=4.64.0
+colorama>=0.4.5
+
+# Development and Testing
+pytest>=7.1.0
+pytest-cov>=4.0.0
+black>=22.0.0
+flake8>=5.0.0
+mypy>=0.991
+
+# Optional dependencies for enhanced features
+# Uncomment as needed:
+
+# Advanced ML models
+# tensorflow>=2.10.0
+# torch>=1.12.0
+# transformers>=4.21.0
+
+# Enhanced data processing
+# dask>=2022.8.0
+# polars>=0.14.0
+
+# Visualization
+# matplotlib>=3.5.0
+# seaborn>=0.11.0
+# plotly>=5.10.0
+
+# Database connectivity
+# sqlalchemy>=1.4.0
+# psycopg2-binary>=2.9.0
+# pymongo>=4.2.0
+
+# Monitoring and logging
+# prometheus-client>=0.14.0
+# sentry-sdk>=1.9.0
+
+# Configuration management
+# python-dotenv>=0.20.0
+# hydra-core>=1.2.0

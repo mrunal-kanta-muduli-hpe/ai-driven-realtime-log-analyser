@@ -1,0 +1,14 @@
+{
+  "file_path": "samplelogs/postgres.log",
+  "analysis_summary": {
+    "total_entries": 0,
+    "error_count": 0,
+    "patterns_detected": 0,
+    "anomalies_found": 0,
+    "component_filter": null
+  },
+  "detected_patterns": [],
+  "classifications": [],
+  "anomalies": [],
+  "detected_issues": []
+}
