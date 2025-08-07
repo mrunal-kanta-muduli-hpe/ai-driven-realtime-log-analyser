@@ -122,9 +122,3 @@ models/*.pkl
 .vscode/
 .idea/
 
-# Keep only small sample logs (manually managed)
-!sample-data/valogs.log
-!sample-data/*.json
-# Exclude large log files to prevent GitHub size limit issues
-sample-data/*logs.log
-sample-data/*.log.large
