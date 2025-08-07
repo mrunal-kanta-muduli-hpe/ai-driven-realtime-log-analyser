@@ -1,0 +1,209 @@
+# Smart Log Analyzer Configuration
+
+# Application Settings
+app:
+  name: "Smart Log Analyzer"
+  version: "1.0.0"
+  log_level: "INFO"
+
+# Processing Configuration
+processing:
+  batch_size: 1000
+  max_file_size: "1GB"
+  supported_formats: ["json", "text"]
+  parallel_processing: false
+  chunk_size: "100MB"
+
+# Pattern Detection Settings
+pattern_detection:
+  min_frequency: 3
+  time_window: 60  # minutes
+  enable_regex_patterns: true
+  enable_temporal_analysis: true
+  enable_sequence_detection: true
+
+# Machine Learning Configuration
+machine_learning:
+  model_path: "data/models/"
+  retrain_threshold: 0.85
+  
+  feature_extraction:
+    use_tfidf: true
+    max_features: 5000
+    ngram_range: [1, 2]
+    use_word_embeddings: false
+    min_df: 2
+    max_df: 0.95
+  
+  models:
+    error_classifier:
+      algorithm: "random_forest"
+      parameters:
+        n_estimators: 100
+        max_depth: 10
+        min_samples_split: 5
+        min_samples_leaf: 2
+        random_state: 42
+    
+    anomaly_detector:
+      algorithm: "isolation_forest"
+      parameters:
+        contamination: 0.1
+        n_estimators: 100
+        random_state: 42
+        max_samples: 0.8
+
+# Output Configuration
+output:
+  format: "json"
+  include_raw_logs: false
+  generate_reports: true
+  max_sample_entries: 5
+  create_summary: true
+
+# Component Mappings
+component_mappings:
+  virtualization-aggregator-kafka:
+    type: "message_queue"
+    priority: "high"
+    team: "platform"
+    critical: true
+  
+  virtualization-aggregator-postgres:
+    type: "database"
+    priority: "critical"
+    team: "data"
+    critical: true
+  
+  virtualization-aggregator-grpc:
+    type: "rpc_service"
+    priority: "high"
+    team: "platform"
+    critical: false
+  
+  virtualization-aggregator-rest:
+    type: "web_service"
+    priority: "high"
+    team: "platform"
+    critical: false
+  
+  relay:
+    type: "proxy"
+    priority: "medium"
+    team: "infrastructure"
+    critical: false
+
+# Jira Integration (set via environment variables)
+jira:
+  enabled: false
+  server: ""
+  username: ""
+  api_token: ""
+  project: "INFRA"
+  default_issue_type: "Bug"
+  default_priority: "Medium"
+  auto_assign: false
+  
+  # Field mappings
+  field_mappings:
+    component_field: "components"
+    severity_field: "priority"
+    team_field: "assignee"
+
+# Defect Template Configuration
+defect_templates:
+  database_error:
+    issue_type: "Bug"
+    priority: "High"
+    components: ["Database"]
+    labels: ["automated", "log-analysis", "database"]
+    severity_mapping:
+      critical: "Highest"
+      high: "High"
+      medium: "Medium"
+      low: "Low"
+  
+  connection_error:
+    issue_type: "Bug"
+    priority: "Medium"
+    components: ["Infrastructure"]
+    labels: ["automated", "log-analysis", "connectivity"]
+    severity_mapping:
+      critical: "High"
+      high: "Medium"
+      medium: "Medium"
+      low: "Low"
+  
+  authentication_error:
+    issue_type: "Bug"
+    priority: "High"
+    components: ["Security"]
+    labels: ["automated", "log-analysis", "security"]
+    severity_mapping:
+      critical: "Highest"
+      high: "High"
+      medium: "Medium"
+      low: "Low"
+  
+  startup_failure:
+    issue_type: "Bug"
+    priority: "High"
+    components: ["Application"]
+    labels: ["automated", "log-analysis", "startup"]
+    severity_mapping:
+      critical: "Highest"
+      high: "High"
+      medium: "Medium"
+      low: "Low"
+
+# Alerting Configuration
+alerting:
+  enabled: false
+  channels:
+    email:
+      enabled: false
+      smtp_server: ""
+      port: 587
+      username: ""
+      password: ""
+      recipients: []
+    
+    slack:
+      enabled: false
+      webhook_url: ""
+      channel: "#alerts"
+    
+    teams:
+      enabled: false
+      webhook_url: ""
+
+# Performance Tuning
+performance:
+  cache_enabled: true
+  cache_size: 1000
+  memory_limit: "2GB"
+  timeout_seconds: 300
+  
+  # Parallel processing
+  max_workers: 4
+  chunk_processing: true
+  
+  # Optimization flags
+  fast_mode: false  # Reduces accuracy for speed
+  skip_ml_for_small_files: true
+  small_file_threshold: 100  # entries
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  file_path: "logs/smart_log_analyzer.log"
+  max_file_size: "10MB"
+  backup_count: 5
+  format: "detailed"  # simple, detailed, json
+  
+  # Component-specific log levels
+  component_levels:
+    analysis: "INFO"
+    ml: "INFO"
+    integration: "INFO"
+    pattern_detection: "DEBUG"

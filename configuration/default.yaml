@@ -1,0 +1,33 @@
+# AI Driven Realtime Log Analyser - Default Configuration
+
+# Log file settings
+log_file: "samplelogs/valogs.log"
+output_dir: "output"
+realtime: false
+debug: false
+
+# Analysis configuration
+analysis:
+  batch_size: 1000
+  max_errors_to_analyze: 10000
+  min_confidence_threshold: 0.7
+  enable_ml_classification: true
+  enable_anomaly_detection: true
+  pattern_recognition_window: 100
+
+# Visualization configuration
+visualization:
+  generate_html_dashboard: true
+  generate_static_charts: true
+  chart_formats:
+    - "png"
+    - "html"
+  max_chart_points: 1000
+  color_scheme: "default"
+
+# Server configuration
+server:
+  host: "localhost"
+  port: 8000
+  auto_open_browser: true
+  enable_cors: true

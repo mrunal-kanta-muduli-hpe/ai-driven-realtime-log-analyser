@@ -1,139 +1,299 @@
-# Smart Log Analyzer (SLA)
-## Intelligent Error Pattern Detection & Automated Defect Management System
+# 🚀 AI Driven Realtime Log Analyser
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
-[![Machine Learning](https://img.shields.io/badge/ML-Enabled-green.svg)](https://scikit-learn.org)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Real-time](https://img.shields.io/badge/realtime-enabled-brightgreen.svg)](#real-time-features)
 
-## 🎯 Overview
+Enterprise-grade intelligent log analysis system with AI/ML capabilities, real-time monitoring, and automatic dashboard refresh.
 
-Smart Log Analyzer (SLA) is an intelligent system that processes application logs, identifies error patterns using machine learning, and automatically creates defects in issue tracking systems like Jira. The system is designed to reduce manual effort in log analysis and accelerate issue resolution.
+## ✨ Features
 
-## 🚀 Key Features
+### 🤖 AI/ML Capabilities
+- **Machine Learning Classification**: TF-IDF + Naive Bayes for intelligent error categorization
+- **Pattern Detection**: Automatic discovery of known and unknown error patterns
+- **Anomaly Detection**: Isolation Forest algorithm for outlier identification
+- **Smart Component Recognition**: Automatic infrastructure component detection
 
-### Phase 1 (Current)
-- **JSON Log Processing**: Parse and analyze structured JSON logs
-- **Error Pattern Detection**: Identify common error patterns and anomalies
-- **Component-based Filtering**: Filter logs by component ID or service type
-- **Basic ML Classification**: Train models to categorize error types
-- **Automated Defect Creation**: Generate issue templates for manual review
+### 🔄 Real-time Processing
+- **Live Log Monitoring**: 1-second polling for new log entries
+- **Auto-refreshing Dashboard**: WebSocket-powered live updates (no manual refresh!)
+- **Real-time Statistics**: Live counters and metrics
+- **Instant Notifications**: Immediate processing of critical errors
 
-### Phase 2 (Planned)
-- **Advanced ML Models**: Deep learning for complex pattern recognition
-- **Real-time Analysis**: Stream processing for live log monitoring
-- **Jira API Integration**: Automatic defect creation and assignment
-- **Root Cause Analysis**: AI-powered investigation suggestions
-- **Dashboard & Visualization**: Web-based monitoring interface
+### 📊 Visualization & Dashboards
+- **Interactive HTML Dashboards**: Rich, responsive web dashboards
+- **Static Chart Generation**: PNG charts for reports and documentation
+- **Timeline Analysis**: Log activity over time with trend analysis
+- **Error Heatmaps**: Activity patterns by time and component
+- **HTTP Server**: Built-in web server for dashboard viewing
 
-## 🏗 Architecture
+### 🤖 Intelligence Features
+- **ML Classification**: Automatic error categorization and severity assessment
+- **Pattern Recognition**: Both known and discovered error patterns
+- **Frequency Analysis**: Statistical analysis of log patterns
+- **Temporal Analysis**: Time-based anomaly detection
+- **Component Insights**: Per-component error analysis and statistics
 
-```
-Smart Log Analyzer
-├── Data Ingestion Layer
-│   ├── Log File Parsers (JSON, Plain Text)
-│   ├── Component ID Filters
-│   └── Data Validation
-├── Analysis Engine
-│   ├── Pattern Recognition
-│   ├── Anomaly Detection
-│   ├── ML Model Training
-│   └── Classification
-├── Intelligence Layer
-│   ├── Error Categorization
-│   ├── Severity Assessment
-│   ├── Impact Analysis
-│   └── Recommendation Engine
-└── Integration Layer
-    ├── Defect Template Generation
-    ├── Jira API Integration
-    └── Notification System
-```
-
-## 📁 Project Structure
+## 🏗 Project Structure
 
 ```
-smart-log-analyser/
-├── src/
-│   ├── core/
-│   │   ├── log_parser.py          # JSON log parsing
-│   │   ├── pattern_detector.py    # Error pattern detection
-│   │   ├── ml_engine.py          # Machine learning models
-│   │   └── component_filter.py   # Component-based filtering
-│   ├── models/
-│   │   ├── error_classifier.py   # ML model definitions
-│   │   ├── anomaly_detector.py   # Anomaly detection models
-│   │   └── feature_extractor.py  # Feature engineering
-│   ├── integrations/
-│   │   ├── jira_client.py        # Jira API integration
-│   │   └── defect_generator.py   # Automated defect creation
-│   ├── utils/
-│   │   ├── config.py             # Configuration management
-│   │   ├── logger.py             # Application logging
-│   │   └── helpers.py            # Utility functions
-│   └── main.py                   # Main application entry point
-├── data/
-│   ├── models/                   # Trained ML models
-│   ├── training/                 # Training datasets
-│   └── processed/                # Processed log data
-├── tests/
-│   ├── unit/                     # Unit tests
-│   ├── integration/              # Integration tests
-│   └── fixtures/                 # Test data
+ai-driven-realtime-log-analyser/
+├── main.py                    # Main entry point
+├── requirements.txt           # Python dependencies
 ├── configs/
-│   ├── config.yaml              # Main configuration
-│   ├── jira_config.yaml         # Jira settings
-│   └── ml_config.yaml           # ML model settings
-├── docs/
-│   ├── technical_specification.md
-│   ├── user_guide.md
-│   └── api_documentation.md
-├── samplelogs/                  # Sample log files
-├── requirements.txt             # Python dependencies
-├── setup.py                     # Package setup
-└── docker-compose.yml          # Containerization
+│   └── default.yaml          # Default configuration
+├── samplelogs/               # Sample log files (ALWAYS read from here)
+│   ├── valogs.log           # VA component logs
+│   └── COMMON\ VIRTUALIZATION\ PROVIDER.log
+├── src/
+│   ├── core/                # Core components
+│   │   ├── analyzer.py      # Main analyzer class
+│   │   ├── config.py        # Configuration management
+│   │   └── models.py        # Data models
+│   ├── analysis/            # Analysis engines
+│   │   ├── pattern_detector.py   # Pattern detection
+│   │   ├── ml_classifier.py      # ML classification
+│   │   └── anomaly_detector.py   # Anomaly detection
+│   ├── visualization/       # Visualization components
+│   │   ├── dashboard_generator.py # HTML dashboard generation
+│   │   ├── chart_generator.py     # Static chart generation
+│   │   └── server.py             # HTTP server
+│   └── utils/              # Utilities
+│       ├── log_parser.py    # Log parsing
+│       └── logger.py        # Logging setup
+├── output/                  # Generated reports and charts
+└── tests/                  # Test files
 ```
 
-## 🛠 Technology Stack
+## 🚀 Quick Start
 
-- **Language**: Python 3.8+
-- **ML Libraries**: scikit-learn, pandas, numpy
-- **NLP**: NLTK, spaCy
-- **API Integration**: requests, jira-python
-- **Data Processing**: pandas, json
-- **Web Framework**: FastAPI (for future API)
-- **Containerization**: Docker
+### 1. Installation
 
-## 📊 Sample Use Cases
+```bash
+# Clone or navigate to the project directory
+cd /home/dev/repo/ws/mrunal/mycode/ai-driven-realtime-log-analyser
 
-### Use Case 1: Database Connection Issues
-**Input**: Virtualization Aggregator logs showing DB connection failures
-**Analysis**: Pattern detected - recurring "connection refused" errors
-**Output**: Defect created with title "Database Connection Failure in VA Services"
+# Install dependencies
+pip install -r requirements.txt
+```
 
-### Use Case 2: Component-Specific Analysis
-**Input**: Component ID "virtualization-aggregator-kafka"
-**Analysis**: Filter logs by component, detect service startup failures
-**Output**: Categorized errors with root cause suggestions
+### 2. Basic Usage
 
-## 🚦 Getting Started
+```bash
+# Run analysis on default sample logs
+python main.py
 
-See [Quick Start Guide](docs/user_guide.md) for detailed setup instructions.
+# Analyze specific log file
+python main.py --log-file /path/to/your/logfile.log
 
-## 📈 Roadmap
+# Run with real-time monitoring
+python main.py --realtime
 
-- **Q1 2025**: Basic pattern detection and defect generation
-- **Q2 2025**: ML model integration and Jira automation
-- **Q3 2025**: Real-time analysis and web dashboard
-- **Q4 2025**: Advanced AI-powered root cause analysis
+# Generate visualizations only
+python main.py --visualize-only
 
-## 🤝 Contributing
+# Serve dashboards via HTTP
+python main.py --serve --port 8080
+```
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
+### Sample Log Location
+
+**Important**: The sample logs are always read from:
+```
+/home/dev/repo/ws/mrunal/mycode/ai-driven-realtime-log-analyser/samplelogs/
+```
+
+This directory contains:
+- `valogs.log` - Virtualization Aggregator logs
+- `COMMON VIRTUALIZATION PROVIDER.log` - CVP component logs
+
+The system can be configured to monitor this directory for new/updated log files.
+
+## 📋 Configuration
+
+Configuration is managed through YAML files. The default configuration is in `configs/default.yaml`:
+
+```yaml
+# Log file settings
+log_file: "samplelogs/valogs.log"
+output_dir: "output"
+realtime: false
+
+# Analysis settings
+analysis:
+  enable_ml_classification: true
+  enable_anomaly_detection: true
+  min_confidence_threshold: 0.7
+
+# Visualization settings
+visualization:
+  generate_html_dashboard: true
+  generate_static_charts: true
+```
+
+## 🎯 Usage Examples
+
+### Basic Analysis
+```bash
+# Analyze default logs and generate dashboard
+python main.py
+
+# View results
+python main.py --serve
+```
+
+### Advanced Analysis
+```bash
+# Full analysis with all features
+python main.py --log-file samplelogs/valogs.log --debug
+
+# Real-time monitoring
+python main.py --realtime --output-dir /tmp/analysis
+```
+
+### Visualization Only
+```bash
+# Generate charts from existing analysis
+python main.py --visualize-only
+
+# Serve dashboards
+python main.py --serve --port 8080
+```
+
+## 📊 Output
+
+The analyzer generates:
+
+1. **Interactive Dashboard** (`output/interactive_dashboard.html`)
+   - Summary statistics
+   - Timeline charts
+   - Component breakdown
+   - Error patterns
+   - Top error messages
+
+2. **Static Charts** (`output/*.png`)
+   - Timeline chart
+   - Component analysis
+   - Error patterns
+   - Distribution charts
+   - Activity heatmaps
+
+3. **Analysis Results** (`output/analysis_results.json`)
+   - Complete analysis data in JSON format
+   - Component statistics
+   - Error patterns
+   - Timeline data
+
+## 🔧 Components Supported
+
+The system automatically detects and analyzes logs from:
+
+- **VA** - Virtualization Aggregator
+- **CVP** - Common Virtualization Provider  
+- **VM** - Virtual Manager
+- **VMOPS** - Virtual Machine Operations
+- **DSC** - Data Services Connector
+- **NVM** - Nimble Virt Manager
+- **PCBE** - PCBE CCA Framework
+
+## 🤖 AI/ML Features
+
+### Pattern Detection
+- **Known Patterns**: Pre-defined error patterns (connection errors, auth failures, etc.)
+- **Discovered Patterns**: Machine learning-based pattern discovery
+- **Pattern Confidence**: Confidence scoring for pattern matches
+
+### Anomaly Detection
+- **Frequency Anomalies**: Unusual message frequencies
+- **Pattern Anomalies**: Unusual message patterns
+- **Temporal Anomalies**: Unusual timing patterns
+- **ML Anomalies**: Isolation Forest-based detection
+
+### Classification
+- **Error Categorization**: Automatic error type classification
+- **Severity Assessment**: Severity prediction for log entries
+- **Component Inference**: Automatic component detection from log content
+
+## 🌐 Web Dashboard
+
+The interactive dashboard provides:
+
+- **Real-time Statistics**: Live summary cards
+- **Interactive Charts**: Plotly-powered visualizations
+- **Component Analysis**: Detailed component breakdown
+- **Error Timeline**: Time-series analysis
+- **Pattern Visualization**: Error pattern distribution
+- **Responsive Design**: Mobile-friendly interface
+
+Access via: `http://localhost:8000` (or custom port)
+
+## 🔄 Real-time Monitoring
+
+Enable real-time monitoring with `--realtime` flag:
+
+- Monitors log files for new entries
+- Processes new logs automatically
+- Updates analysis results
+- Detects critical errors in real-time
+- Maintains analysis state
+
+## 🛠 Development
+
+### Adding New Components
+
+1. Update `ComponentType` enum in `src/core/models.py`
+2. Add component detection logic in `LogEntry._infer_component()`
+3. Update visualization templates if needed
+
+### Adding New Analysis Features
+
+1. Create new analyzer in `src/analysis/`
+2. Integrate with main analyzer in `src/core/analyzer.py`
+3. Update configuration schema in `src/core/config.py`
+
+### Testing
+
+```bash
+# Run tests
+pytest tests/
+
+# Run with coverage
+pytest --cov=src tests/
+```
+
+## Performance
+
+- **Batch Processing**: Configurable batch sizes for large files
+- **Memory Efficient**: Streaming processing for large logs
+- **Parallel Processing**: Async/await for concurrent operations
+- **Caching**: Model caching for improved performance
+
+## 🔒 Security
+
+- **Input Validation**: Secure log file parsing
+- **Path Sanitization**: Prevents directory traversal
+- **Error Handling**: Graceful handling of malformed logs
+- **Resource Limits**: Configurable processing limits
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see LICENSE file for details.
 
-## 📞 Contact
+## 🤝 Contributing
 
-For questions and support, please contact the development team.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## 📞 Support
+
+For issues and questions:
+- Check the logs in debug mode: `python main.py --debug`
+- Review configuration in `configs/default.yaml`
+- Verify sample logs in `samplelogs/` directory
+
+---
+
+**AI Driven Realtime Log Analyser v1.0** - Powered by AI/ML Technology 🚀

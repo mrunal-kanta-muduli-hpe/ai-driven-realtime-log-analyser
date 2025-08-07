@@ -1,0 +1,15 @@
+{
+  "total_files_processed": 1,
+  "total_errors_found": 0,
+  "total_patterns_detected": 0,
+  "total_issues_generated": 0,
+  "processing_timestamp": "/home/dev/repo/ws/mrunal/mycode/smart-log-analyser",
+  "files_summary": [
+    {
+      "file": "samplelogs/kafka.log",
+      "errors": 0,
+      "patterns": 0,
+      "issues": 0
+    }
+  ]
+}

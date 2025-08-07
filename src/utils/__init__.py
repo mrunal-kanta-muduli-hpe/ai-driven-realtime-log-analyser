@@ -1,1 +1,1 @@
-"""Smart Log Analyzer - Utility Modules"""
+# Utility components

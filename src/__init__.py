@@ -1,1 +1,1 @@
-"""Smart Log Analyzer - Core Package"""
+# Smart Log Analyzer - Core package

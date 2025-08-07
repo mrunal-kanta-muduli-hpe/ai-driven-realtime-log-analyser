@@ -1,0 +1,39 @@
+{
+  "total_files_processed": 5,
+  "total_errors_found": 0,
+  "total_patterns_detected": 0,
+  "total_issues_generated": 0,
+  "processing_timestamp": "/home/dev/repo/ws/mrunal/mycode/smart-log-analyser",
+  "files_summary": [
+    {
+      "file": "samplelogs/grpc.log",
+      "errors": 0,
+      "patterns": 0,
+      "issues": 0
+    },
+    {
+      "file": "samplelogs/kafka.log",
+      "errors": 0,
+      "patterns": 0,
+      "issues": 0
+    },
+    {
+      "file": "samplelogs/postgres.log",
+      "errors": 0,
+      "patterns": 0,
+      "issues": 0
+    },
+    {
+      "file": "samplelogs/relay.log",
+      "errors": 0,
+      "patterns": 0,
+      "issues": 0
+    },
+    {
+      "file": "samplelogs/rest.log",
+      "errors": 0,
+      "patterns": 0,
+      "issues": 0
+    }
+  ]
+}
