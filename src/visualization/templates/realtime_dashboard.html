@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Driven Realtime Log Analyser - Live Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: #27ae60;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin: 5px 0;
+            animation: pulse 2s infinite;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .logs-critical { color: #e74c3c; }
+        .logs-warning { color: #f39c12; }
+        .logs-info { color: #3498db; }
+        .logs-success { color: #27ae60; }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .charts-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .chart-container {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(45deg, #f1f2f6, #ddd);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .logs-feed {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+        
+        .log-entry.new {
+            animation: slideIn 0.5s ease;
+            border-left-color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .log-entry.error {
+            border-left-color: #e74c3c;
+            background: #fadbd8;
+        }
+        
+        .log-entry.warning {
+            border-left-color: #f39c12;
+            background: #fdeaa7;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 30px;
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+        
+        .connected { background: #27ae60 !important; }
+        .disconnected { background: #e74c3c !important; }
+        .connecting { background: #f39c12 !important; }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">
+        🔌 Connecting...
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI Driven Realtime Log Analyser</h1>
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                LIVE AUTO-REFRESH
+            </div>
+            <p><small>Last Updated: <span id="lastUpdate">-</span></small></p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number logs-critical" id="criticalLogs">0</div>
+                <div class="stat-label">Critical/Errors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number logs-warning" id="warningLogs">0</div>
+                <div class="stat-label">Warnings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number logs-success" id="totalLogs">0</div>
+                <div class="stat-label">Total Logs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="anomalies" style="color: #9b59b6;">0</div>
+                <div class="stat-label">AI Anomalies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="patterns" style="color: #16a085;">0</div>
+                <div class="stat-label">ML Patterns</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="accuracy" style="color: #e67e22;">100%</div>
+                <div class="stat-label">ML Accuracy</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="charts-section">
+                <h2 class="section-title">📊 Real-time Analytics</h2>
+                <div class="chart-grid">
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            📈 Log Timeline<br>
+                            <small>Live stream analysis</small>
+                        </div>
+                        <h4>Timeline Analysis</h4>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            🔥 Activity Heatmap<br>
+                            <small>Real-time intensity</small>
+                        </div>
+                        <h4>Activity Distribution</h4>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            🎯 Pattern Detection<br>
+                            <small>AI-powered insights</small>
+                        </div>
+                        <h4>Pattern Analysis</h4>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            ⚠️ Anomaly Detection<br>
+                            <small>ML-based alerts</small>
+                        </div>
+                        <h4>Anomaly Tracking</h4>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="logs-feed">
+                <h2 class="section-title">📝 Live Log Stream</h2>
+                <div id="logsFeed">
+                    <div class="log-entry">
+                        <strong>System Ready</strong> - Real-time monitoring active
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // WebSocket connection
+        let ws = null;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+        
+        // DOM elements
+        const connectionStatus = document.getElementById('connectionStatus');
+        const lastUpdate = document.getElementById('lastUpdate');
+        const criticalLogs = document.getElementById('criticalLogs');
+        const warningLogs = document.getElementById('warningLogs');
+        const totalLogs = document.getElementById('totalLogs');
+        const anomalies = document.getElementById('anomalies');
+        const patterns = document.getElementById('patterns');
+        const accuracy = document.getElementById('accuracy');
+        const logsFeed = document.getElementById('logsFeed');
+        
+        // Connect to WebSocket
+        function connectWebSocket() {
+            const wsUrl = 'ws://localhost:8890';
+            console.log('Connecting to WebSocket:', wsUrl);
+            
+            connectionStatus.textContent = '🔌 Connecting...';
+            connectionStatus.className = 'connection-status connecting';
+            
+            try {
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = function(event) {
+                    console.log('WebSocket connected');
+                    connectionStatus.textContent = '✅ Connected - Live Updates';
+                    connectionStatus.className = 'connection-status connected';
+                    reconnectAttempts = 0;
+                };
+                
+                ws.onmessage = function(event) {
+                    console.log('Received data:', event.data);
+                    try {
+                        const data = JSON.parse(event.data);
+                        updateDashboard(data);
+                    } catch (e) {
+                        console.error('Error parsing WebSocket data:', e);
+                    }
+                };
+                
+                ws.onclose = function(event) {
+                    console.log('WebSocket disconnected');
+                    connectionStatus.textContent = '❌ Disconnected';
+                    connectionStatus.className = 'connection-status disconnected';
+                    
+                    // Attempt to reconnect
+                    if (reconnectAttempts < maxReconnectAttempts) {
+                        reconnectAttempts++;
+                        console.log(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`);
+                        setTimeout(connectWebSocket, 3000);
+                    }
+                };
+                
+                ws.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                    connectionStatus.textContent = '❌ Connection Error';
+                    connectionStatus.className = 'connection-status disconnected';
+                };
+                
+            } catch (error) {
+                console.error('Error creating WebSocket:', error);
+                connectionStatus.textContent = '❌ Connection Failed';
+                connectionStatus.className = 'connection-status disconnected';
+            }
+        }
+        
+        // Update dashboard with new data
+        function updateDashboard(data) {
+            console.log('Updating dashboard with:', data);
+            
+            // Update timestamp
+            lastUpdate.textContent = new Date().toLocaleString();
+            
+            // Update statistics with combined error/critical count
+            if (data.stats) {
+                const errorCount = (data.stats.error_count || 0) + (data.stats.critical || 0);
+                criticalLogs.textContent = errorCount;
+                warningLogs.textContent = data.stats.warning_count || data.stats.warning || 0;
+                totalLogs.textContent = data.stats.total_entries || data.stats.total || 0;
+                anomalies.textContent = data.stats.anomalies || 0;
+                patterns.textContent = data.stats.patterns || 0;
+                
+                // Update accuracy if available
+                if (data.stats.ml_accuracy) {
+                    accuracy.textContent = (data.stats.ml_accuracy * 100).toFixed(0) + '%';
+                }
+            }
+            
+            // Update logs feed
+            if (data.recent_logs && Array.isArray(data.recent_logs)) {
+                updateLogsFeed(data.recent_logs);
+            }
+            
+            // Animate charts
+            animateCharts();
+        }
+        
+        // Update logs feed with optimization
+        function updateLogsFeed(newLogs) {
+            // Limit to most recent and important logs only
+            const importantLogs = newLogs.filter(log => {
+                const level = (log.level || 'info').toLowerCase();
+                return level.includes('error') || level.includes('warning') || level.includes('critical');
+            }).slice(0, 5); // Only show 5 most important
+            
+            importantLogs.forEach(log => {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry new';
+                
+                const level = log.level || 'info';
+                if (level.toLowerCase().includes('error') || level.toLowerCase().includes('critical')) {
+                    logEntry.classList.add('error');
+                } else if (level.toLowerCase().includes('warning') || level.toLowerCase().includes('warn')) {
+                    logEntry.classList.add('warning');
+                }
+                
+                // Compact log format
+                const timestamp = log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString();
+                const message = (log.message || log.content || log).substring(0, 80) + '...';
+                logEntry.innerHTML = `<strong>${timestamp}</strong> - ${message}`;
+                
+                logsFeed.insertBefore(logEntry, logsFeed.firstChild);
+                
+                // Keep only last 8 entries for compact view
+                while (logsFeed.children.length > 8) {
+                    logsFeed.removeChild(logsFeed.lastChild);
+                }
+                
+                setTimeout(() => logEntry.classList.remove('new'), 500);
+            });
+        }
+        
+        // Animate charts to show activity
+        function animateCharts() {
+            const chartPlaceholders = document.querySelectorAll('.chart-placeholder');
+            chartPlaceholders.forEach(chart => {
+                chart.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
+                chart.style.color = 'white';
+                chart.style.transform = 'scale(1.02)';
+                
+                setTimeout(() => {
+                    chart.style.background = 'linear-gradient(45deg, #f1f2f6, #ddd)';
+                    chart.style.color = '#666';
+                    chart.style.transform = 'scale(1)';
+                }, 300);
+            });
+        }
+        
+        // Simulate data updates for demo - more realistic data
+        function simulateDataUpdates() {
+            const demoData = {
+                stats: {
+                    error_count: Math.floor(Math.random() * 8) + 2,
+                    warning_count: Math.floor(Math.random() * 15) + 5,
+                    total_entries: Math.floor(Math.random() * 500) + 150,
+                    anomalies: Math.floor(Math.random() * 12) + 3,
+                    patterns: Math.floor(Math.random() * 5) + 2,
+                    ml_accuracy: 0.95 + Math.random() * 0.05
+                },
+                recent_logs: [
+                    {
+                        timestamp: new Date().toISOString(),
+                        message: `Authentication failure detected from IP ${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+                        level: 'error'
+                    },
+                    {
+                        timestamp: new Date().toISOString(),
+                        message: `High memory usage detected: ${(Math.random() * 30 + 70).toFixed(1)}%`,
+                        level: 'warning'
+                    }
+                ]
+            };
+            
+            updateDashboard(demoData);
+        }
+        
+        // Initialize dashboard
+        function initDashboard() {
+            console.log('Initializing dashboard...');
+            
+            // Connect to WebSocket
+            connectWebSocket();
+            
+            // Start simulation if WebSocket doesn't connect
+            setTimeout(() => {
+                if (!ws || ws.readyState !== WebSocket.OPEN) {
+                    console.log('WebSocket not connected, starting simulation mode');
+                    connectionStatus.textContent = '🔄 Demo Mode - Simulated Data';
+                    connectionStatus.className = 'connection-status connecting';
+                    
+                    // Simulate updates every 3 seconds
+                    setInterval(simulateDataUpdates, 3000);
+                    
+                    // Initial simulation
+                    simulateDataUpdates();
+                }
+            }, 5000);
+        }
+        
+        // Start dashboard when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

@@ -63,9 +63,13 @@ class RealtimeDashboardServer:
     
     def _start_http_server(self):
         """Start HTTP server for serving dashboard files"""
+        analyzer = self.analyzer  # Store reference for inner class
+        
         class RealTimeHTTPHandler(http.server.SimpleHTTPRequestHandler):
             def __init__(self, *args, **kwargs):
-                super().__init__(*args, directory=str(self.analyzer.config.get_output_path()), **kwargs)
+                # Set directory to project root to access templates
+                project_root = Path(__file__).parent.parent.parent
+                super().__init__(*args, directory=str(project_root), **kwargs)
             
             def end_headers(self):
                 # Add CORS headers for WebSocket connection
@@ -75,23 +79,41 @@ class RealtimeDashboardServer:
                 super().end_headers()
             
             def do_GET(self):
-                # Handle API endpoints
-                if self.path.startswith('/api/'):
+                # Handle special routes
+                if self.path == '/realtime_dashboard.html':
+                    self._serve_dashboard()
+                elif self.path.startswith('/api/'):
                     self._handle_api_request()
                 else:
                     super().do_GET()
+            
+            def _serve_dashboard(self):
+                """Serve the real-time dashboard HTML"""
+                dashboard_path = Path(__file__).parent / 'templates' / 'realtime_dashboard.html'
+                try:
+                    with open(dashboard_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    self.send_response(200)
+                    self.send_header('Content-type', 'text/html; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(content.encode('utf-8'))
+                except FileNotFoundError:
+                    self.send_error(404, f"Dashboard template not found: {dashboard_path}")
+                except Exception as e:
+                    self.send_error(500, f"Error serving dashboard: {e}")
             
             def _handle_api_request(self):
                 """Handle REST API requests for real-time data"""
                 if self.path == '/api/stats':
                     # Return current statistics
                     stats = {
-                        'total_entries': len(self.analyzer.processed_entries),
-                        'error_count': len([e for e in self.analyzer.processed_entries if e.level == 'ERROR']),
-                        'warning_count': len([e for e in self.analyzer.processed_entries if e.level == 'WARNING']),
-                        'components': len(set(e.component for e in self.analyzer.processed_entries)),
+                        'total_entries': len(analyzer.processed_entries) if hasattr(analyzer, 'processed_entries') else 0,
+                        'error_count': len([e for e in analyzer.processed_entries if e.level == 'ERROR']) if hasattr(analyzer, 'processed_entries') else 0,
+                        'warning_count': len([e for e in analyzer.processed_entries if e.level == 'WARNING']) if hasattr(analyzer, 'processed_entries') else 0,
+                        'components': len(set(e.component for e in analyzer.processed_entries)) if hasattr(analyzer, 'processed_entries') else 0,
                         'last_update': datetime.now().isoformat(),
-                        'is_monitoring': self.analyzer.is_monitoring
+                        'is_monitoring': getattr(analyzer, 'is_monitoring', False)
                     }
                     
                     self.send_response(200)
@@ -101,13 +123,13 @@ class RealtimeDashboardServer:
                 
                 elif self.path == '/api/recent':
                     # Return recent log entries
-                    recent_entries = self.analyzer.processed_entries[-10:]  # Last 10 entries
+                    recent_entries = analyzer.processed_entries[-10:] if hasattr(analyzer, 'processed_entries') else []
                     entries_data = [
                         {
-                            'timestamp': entry.timestamp.isoformat() if entry.timestamp else None,
-                            'level': entry.level,
-                            'component': entry.component,
-                            'message': entry.message[:100] + '...' if len(entry.message) > 100 else entry.message
+                            'timestamp': entry.timestamp.isoformat() if hasattr(entry, 'timestamp') and entry.timestamp else datetime.now().isoformat(),
+                            'level': getattr(entry, 'level', 'INFO'),
+                            'component': getattr(entry, 'component', 'Unknown'),
+                            'message': (entry.message[:100] + '...' if len(entry.message) > 100 else entry.message) if hasattr(entry, 'message') else 'No message'
                         }
                         for entry in recent_entries
                     ]
@@ -121,9 +143,6 @@ class RealtimeDashboardServer:
                     self.send_response(404)
                     self.end_headers()
         
-        # Bind the analyzer to the handler class
-        RealTimeHTTPHandler.analyzer = self.analyzer
-        
         try:
             with socketserver.TCPServer(("", self.port), RealTimeHTTPHandler) as httpd:
                 logger.info(f"🌐 HTTP server started on port {self.port}")
@@ -131,7 +150,7 @@ class RealtimeDashboardServer:
         except Exception as e:
             logger.error(f"❌ Failed to start HTTP server: {e}")
     
-    async def _websocket_handler(self, websocket, path):
+    async def _websocket_handler(self, websocket):
         """Handle WebSocket connections"""
         logger.info(f"🔌 New WebSocket client connected from {websocket.remote_address}")
         self.connected_clients.add(websocket)
