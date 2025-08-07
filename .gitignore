@@ -116,6 +116,7 @@ dmypy.json
 # Project specific
 analysis-results/
 test-results/
+demo-results/
 models/*.pkl
 *.log
 .DS_Store
