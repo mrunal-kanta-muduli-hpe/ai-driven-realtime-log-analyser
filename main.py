@@ -55,8 +55,8 @@ Examples:
 
     parser.add_argument(
         "--log-file", "-f",
-        default="sample-data/valogs.log",
-        help="Path to log file (default: sample-data/valogs.log)"
+        default=None,
+        help="Path to log file (required)"
     )
 
     parser.add_argument(
