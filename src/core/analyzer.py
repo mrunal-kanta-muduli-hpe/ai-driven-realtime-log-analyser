@@ -232,7 +232,9 @@ class SmartLogAnalyzer:
             if entry.timestamp:
                 # Group by hour
                 hour_key = entry.timestamp.strftime("%Y-%m-%d %H:00:00")
-                timeline[hour_key][entry.level.lower()] += 1
+                # Normalize level names
+                level_key = "warning" if entry.level in ["WARN", "WARNING"] else entry.level.lower()
+                timeline[hour_key][level_key] += 1
         
         return [
             {"timestamp": ts, **counts}

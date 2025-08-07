@@ -105,7 +105,7 @@ main() {
     print_header "Phase 1: AI/ML Log Analysis"
     print_info "Running comprehensive log analysis with ML classification..."
     
-    python3 main.py --debug
+    python3 main.py --log-file sample-data/cvplogs.log --debug
     
     print_success "Analysis completed!"
     print_info "Generated files:"
@@ -117,7 +117,7 @@ main() {
     print_header "Phase 2: Static Dashboard Demo"
     print_info "Starting static dashboard server..."
     
-    python3 main.py --serve --port 8889 &
+    python3 main.py --log-file sample-data/cvplogs.log --serve --port 8889 &
     STATIC_SERVER_PID=$!
     
     sleep 3
@@ -168,7 +168,7 @@ main() {
     wait_for_user
     
     print_info "Starting real-time dashboard..."
-    python3 main.py --realtime-dashboard --port 8889 &
+    python3 main.py --log-file sample-data/cvplogs.log --realtime-dashboard --port 8889 &
     REALTIME_PID=$!
     
     sleep 5
