@@ -13,8 +13,8 @@ from dataclasses import dataclass, asdict
 from collections import defaultdict, deque
 import re
 
-from .config import Config
-from .models import LogEntry, AnalysisResult, ComponentType
+from core.config import Config
+from core.models import LogEntry, AnalysisResult, ComponentType
 from analysis.pattern_detector import PatternDetector
 from analysis.ml_classifier import MLClassifier
 from analysis.anomaly_detector import AnomalyDetector

@@ -11,6 +11,7 @@ import sys
 import logging
 from pathlib import Path
 import argparse
+from utils.port_finder import find_available_port
 
 logger = logging.getLogger(__name__)
 
@@ -18,15 +19,29 @@ logger = logging.getLogger(__name__)
 class DashboardServer:
     """HTTP server for serving dashboards and visualizations"""
     
-    def __init__(self, directory: str = ".", port: int = 8000):
+    def __init__(self, directory: str = ".", port: int = 8000, auto_port: bool = True):
         self.directory = Path(directory).resolve()
-        self.port = port
+        self.requested_port = port
+        self.auto_port = auto_port
+        self.actual_port = None
         
     def serve(self):
-        """Start the HTTP server"""
+        """Start the HTTP server with automatic port selection"""
         if not self.directory.exists():
             logger.error(f"❌ Directory {self.directory} does not exist")
             return
+        
+        # Find available port
+        if self.auto_port:
+            try:
+                self.actual_port = find_available_port(self.requested_port)
+                if self.actual_port != self.requested_port:
+                    logger.info(f"⚠️  Port {self.requested_port} was busy, using port {self.actual_port}")
+            except RuntimeError as e:
+                logger.error(f"❌ {e}")
+                return
+        else:
+            self.actual_port = self.requested_port
         
         try:
             import os
@@ -35,12 +50,12 @@ class DashboardServer:
             
             logger.info(f"🌐 Starting HTTP server...")
             logger.info(f"📁 Serving directory: {self.directory}")
-            logger.info(f"🔗 Server URL: http://localhost:{self.port}")
+            logger.info(f"🔗 Server URL: http://localhost:{self.actual_port}")
             
             # Create server
             Handler = http.server.SimpleHTTPRequestHandler
-            with socketserver.TCPServer(("", self.port), Handler) as httpd:
-                logger.info(f"✅ Server started on port {self.port}")
+            with socketserver.TCPServer(("", self.actual_port), Handler) as httpd:
+                logger.info(f"✅ Server started on port {self.actual_port}")
                 
                 # Look for dashboard files
                 dashboard_files = list(self.directory.glob("**/interactive_dashboard.html"))
@@ -49,11 +64,11 @@ class DashboardServer:
                     for i, dashboard in enumerate(dashboard_files, 1):
                         rel_path = dashboard.relative_to(self.directory)
                         logger.info(f"  {i}. {rel_path}")
-                        logger.info(f"     🔗 http://localhost:{self.port}/{rel_path}")
+                        logger.info(f"     🔗 http://localhost:{self.actual_port}/{rel_path}")
                     
                     # Open the first dashboard
                     first_dashboard = dashboard_files[0].relative_to(self.directory)
-                    url = f"http://localhost:{self.port}/{first_dashboard}"
+                    url = f"http://localhost:{self.actual_port}/{first_dashboard}"
                     logger.info(f"\\n🚀 Opening dashboard: {url}")
                     webbrowser.open(url)
                 else:
@@ -63,15 +78,15 @@ class DashboardServer:
                         logger.info(f"\\n📄 Available HTML files:")
                         for html_file in html_files[:5]:  # Show first 5
                             rel_path = html_file.relative_to(self.directory)
-                            logger.info(f"  🔗 http://localhost:{self.port}/{rel_path}")
+                            logger.info(f"  🔗 http://localhost:{self.actual_port}/{rel_path}")
                         
                         # Open the first HTML file
                         first_html = html_files[0].relative_to(self.directory)
-                        url = f"http://localhost:{self.port}/{first_html}"
+                        url = f"http://localhost:{self.actual_port}/{first_html}"
                         webbrowser.open(url)
                     else:
                         logger.info("\\n📂 No dashboard files found. Serving directory listing.")
-                        url = f"http://localhost:{self.port}"
+                        url = f"http://localhost:{self.actual_port}"
                         webbrowser.open(url)
                 
                 logger.info(f"\\n⏹️  Press Ctrl+C to stop the server")

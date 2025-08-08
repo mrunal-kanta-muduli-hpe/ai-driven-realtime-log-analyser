@@ -11,11 +11,15 @@ import asyncio
 import argparse
 import logging
 import sys
+import os
 from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+# Add src to path to enable absolute imports
+current_dir = Path(__file__).parent
+src_dir = current_dir / "src"
+sys.path.insert(0, str(src_dir))
 
+# Now use absolute imports
 from core.analyzer import SmartLogAnalyzer
 from core.config import Config
 from utils.logger import setup_logging
